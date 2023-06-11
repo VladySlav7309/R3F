@@ -1,18 +1,10 @@
 import * as THREE from "three";
-import { useGLTF, useTexture } from "@react-three/drei";
+import { useGLTF, useTexture, Sparkles } from "@react-three/drei";
 import React from "react";
 import { Center } from "@react-three/drei";
-import * as dat from "dat.gui";
 
 const portalLightColor = 0xffffff;
 const poleLightColor = 0xffffe5;
-
-const debugObject = {};
-
-debugObject.clearColor = "#ff0000";
-const gui = new dat.gui({
-  width: 400
-});
 
 function BakedPortal() {
   const bakedTexture = useTexture("./model/Baked.jpg");
@@ -56,6 +48,14 @@ function BakedPortal() {
       >
         <meshBasicMaterial color={poleLightColor}></meshBasicMaterial>
       </mesh>
+
+      <Sparkles
+        size={6}
+        scale={[4, 2, 4]}
+        position-y={1}
+        speed={0.2}
+        count={40}
+      />
     </Center>
   );
 }

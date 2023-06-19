@@ -1,16 +1,44 @@
 import * as THREE from "three";
-import { useGLTF, useTexture, Sparkles } from "@react-three/drei";
-import React from "react";
-import { Center } from "@react-three/drei";
+import {
+  useGLTF,
+  useTexture,
+  Sparkles,
+  shaderMaterial,
+} from "@react-three/drei";
+import React, { useRef } from "react";
+import { Center, Float } from "@react-three/drei";
+
+import fragmentShader from "./shaders/portal/fragment.glsl";
+import vertexShader from "./shaders/portal/vertex.glsl";
+import { extend, useFrame } from "@react-three/fiber";
 
 const portalLightColor = 0xffffff;
 const poleLightColor = 0xffffe5;
+
+const PortalMaterial = shaderMaterial(
+  {
+    uTime: 0,
+    uColorStart: new THREE.Color("#ffffff"),
+    uColorEnd: new THREE.Color("#000000"),
+  },
+  vertexShader,
+  fragmentShader
+);
+// const
+extend({ PortalMaterial });
 
 function BakedPortal() {
   const bakedTexture = useTexture("./model/Baked.jpg");
   bakedTexture.flipY = false;
   const { nodes } = useGLTF("./model/Portal Baked.glb");
   console.log("nodes: ", nodes);
+
+  const portalMaterialRef = useRef();
+
+  useFrame((state, delta) => {
+    portalMaterialRef.current.uTime += delta;
+  });
+
   return (
     <Center>
       <mesh
@@ -28,10 +56,7 @@ function BakedPortal() {
         position={nodes.Portal.position}
         rotation={nodes.Portal.rotation}
       >
-        <meshBasicMaterial
-          color={portalLightColor}
-          side={THREE.DoubleSide}
-        ></meshBasicMaterial>
+        <portalMaterial ref={portalMaterialRef} />
       </mesh>
 
       <mesh

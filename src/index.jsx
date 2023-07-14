@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import { Canvas } from "@react-three/fiber";
 import Experience from "./Experience.jsx";
 import * as SPECTOR from "spectorjs";
-import * as dat from "dat.gui";
 
 /*
   Performance Debugging

@@ -1,5 +1,7 @@
 varying vec2 vUv;
 uniform float uTime;
+uniform vec3 uColorStart;
+uniform vec3 uColorEnd;
 
 //	Classic Perlin 3D Noise 
 //	by Stefan Gustavson
@@ -80,7 +82,21 @@ float cnoise(vec3 P)
 
 void main()
 {
-    float strength = cnoise(vec3(vUv * 5.0, uTime));
+    // Displace the UV
+    vec2 displacedUv = vUv + cnoise(vec3(vUv * 5.0, uTime * 0.1));
 
-    gl_FragColor = vec4(strength, strength, strength, 1.0);
+    // Perlin Noise
+    float strength = cnoise(vec3(displacedUv * 5.0, uTime * 0.2));
+
+    // Add outer glow
+    float outerGlow = distance(vUv, vec2(0.5)) * 5.0 - 1.4;
+    strength += outerGlow;
+
+    // Apply cool step
+    strength += step(- 0.2, strength) * 0.8;
+
+    // Final color
+    vec3 color = mix(uColorStart, uColorEnd, strength);
+
+    gl_FragColor = vec4(color, 1.0);
 }
